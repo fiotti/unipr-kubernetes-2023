@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: another-service-deployment
+  namespace: my-namespace
+  labels:
+    app: another-service-app
+spec:
+  selector:
+    matchLabels:
+      app: another-service-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: another-service-app
+    spec:
+      containers:
+      - name: another-service-container
+        image: busybox
+        command: ["sleep", "24h"]
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 1000m

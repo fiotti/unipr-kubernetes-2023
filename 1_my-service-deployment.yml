@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-service-deployment
+  namespace: my-namespace
+  labels:
+    app: my-service-app
+spec:
+  selector:
+    matchLabels:
+      app: my-service-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: my-service-app
+    spec:
+      containers:
+      - name: my-service-container
+        image: ghcr.io/fiotti/my-web-service
+        ports:
+        - containerPort: 80
+        env:
+        - name: TZ
+          value: UTC
+        volumeMounts:
+        - name: my-service-configmap-volume
+          mountPath: /app/appsettings.json
+          subPath: appsettings.json
+          readOnly: true
+        resources:
+          requests:
+            # riserva 128MB di RAM e 10ms/s di CPU (1% di 1 core)
+            memory: 128Mi
+            cpu: 10m
+          limits:
+            # massimo 256MB di RAM e 1000ms/s di CPU (100% di 1 core)
+            memory: 256Mi
+            cpu: 1000m
+      volumes:
+      - name: my-service-configmap-volume
+        configMap:
+          name: my-service-configmap

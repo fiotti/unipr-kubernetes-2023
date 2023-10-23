@@ -1,0 +1,22 @@
+# https://kubernetes.github.io/ingress-nginx/deploy/#quick-start
+# https://kubernetes.github.io/ingress-nginx/examples/rewrite/#examples
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-service-ingress
+  namespace: my-namespace
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /hello(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: my-service
+            port:
+              name: http
